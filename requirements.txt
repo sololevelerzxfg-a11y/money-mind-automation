@@ -1,0 +1,7 @@
+openai
+requests
+moviepy
+Pillow
+pytube
+google-api-python-client
+pexels-api
