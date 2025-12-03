@@ -307,11 +307,8 @@ def run_cycle(topic):
     assemble_video(short_voice_path, clips[:2], music, short_out)
 
     # upload (optional)
-    print("Attempting upload...")
-    upload_to_youtube(long_out, meta.get("title","Money Mind"), meta.get("description",""), meta.get("tags",[]), thumb_file)
-    upload_to_youtube(short_out, meta.get("title","Money Mind - Short"), meta.get("description",""), meta.get("tags",[]), thumb_file)
-
-    print("Cycle complete. Files saved to", OUTDIR)
+    # Upload disabled – manual upload only
+pass
 
 if __name__ == "__main__":
     # Example topics rotation (you can replace or connect to a trends API)
@@ -323,3 +320,13 @@ if __name__ == "__main__":
     ]
     topic = random.choice(topics)
     run_cycle(topic)
+
+# save final files
+long_out = os.path.join(OUTDIR, "final_long.mp4")
+short_out = os.path.join(OUTDIR, "final_short.mp4")
+
+final_clip.write_videofile(long_out, fps=30)
+short_clip.write_videofile(short_out, fps=30)
+
+# Upload disabled – manual upload only
+pass
