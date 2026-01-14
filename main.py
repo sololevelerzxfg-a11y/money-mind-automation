@@ -1,16 +1,14 @@
 main.py
 
-MoneyMind - automated script -> TTS -> visuals -> music -> assemble -> (optional) upload
-
-NOTE: requires environment secrets:
-
-- CHATGPT_KEY (OpenAI)
-
-- PEXELS_API_KEY
-
-- PIXABAY_API_KEY
-
-- YOUTUBE_API_KEY (for some lookups). For uploads provide optional YT_CLIENT_ID, YT_CLIENT_SECRET, YT_REFRESH_TOKEN
+# MoneyMind - automated script -> TTS -> visuals -> music -> assemble -> (optional) upload
+#
+# NOTE: requires environment secrets:
+#
+# - CHATGPT_KEY (OpenAI)
+# - PEXELS_API_KEY
+# - PIXABAY_API_KEY
+# - YOUTUBE_API_KEY
+#   (optional) YT_CLIENT_ID, YT_CLIENT_SECRET, YT_REFRESH_TOKEN
 
 import os
 import json
@@ -25,7 +23,7 @@ from moviepy.editor import (
 AudioFileClip, ImageClip, concatenate_videoclips, CompositeVideoClip, TextClip, VideoFileClip
 )
 
----------- Config ----------
+# ---------- Config ----------
 
 OUTDIR = Path("outputs")
 CLIPS_DIR = Path("clips")
@@ -52,10 +50,10 @@ Basic headers
 OPENAI_HEADERS = {"Authorization": f"Bearer {OPENAI_KEY}"}
 PEXELS_HEADERS = {"Authorization": PEXELS_KEY}
 
----------- Helpers ----------
+# ---------- Helpers ----------
 
 def gpt_generate(prompt, max_tokens=800):
-"""Generate script or metadata using OpenAI ChatCompletion (gpt-3.5-turbo)."""
+    """Generate script or metadata using OpenAI ChatCompletion"""
 url = "https://api.openai.com/v1/chat/completions"
 body = {
 "model": "gpt-3.5-turbo",
@@ -98,7 +96,7 @@ return {"script_long": script_long, "script_short": script_short, **meta}
 
 
 
----------- TTS (OpenAI) ----------
+# ---------- TTS (OpenAI) ----------
 
 def text_to_speech_openai(text, out_path: Path, voice="alloy"):
 """Uses OpenAI TTS endpoint (if available) else fallback to gTTS."""
@@ -129,7 +127,7 @@ except Exception as e:
     print("TTS failed:", e)  
     raise
 
----------- Stock fetch (Pexels + Pixabay) ----------
+# ---------- Stock fetch (Pexels + Pixabay) ----------
 
 def fetch_pexels_videos(query, count=3):
 """Download top Pexels videos for a query."""
@@ -185,7 +183,7 @@ f.write(chunk)
 out.append(str(dest))
 return out
 
----------- Music (Pixabay) ----------
+# ---------- Music (Pixabay) ----------
 
 def fetch_pixabay_music(query="motivational", count=5):
 """Pixabay music endpoint - fetch a random music track and download it."""
@@ -209,7 +207,7 @@ f.write(chunk)
 return str(dest)
 return None
 
----------- Thumbnail generator ----------
+# ---------- Thumbnail generator ----------
 
 def create_thumbnail(title_text, out_path: Path):
 """Simple thumbnail generator using PIL."""
@@ -233,7 +231,7 @@ draw.text((60, H - 80), "Money Mind • Subscribe", font=fnt, fill=(255,255,255)
 img.save(out_path)
 return str(out_path)
 
----------- Assemble video ----------
+# ---------- Assemble video ----------
 
 def assemble_video(voice_file, clip_files, music_file, out_file, duration_target=None):
 """
@@ -267,7 +265,7 @@ final = final.set_audio(final_audio)
 final.write_videofile(str(out_file), fps=24, codec="libx264", audio_codec="aac", threads=2, verbose=False, logger=None)
 return str(out_file)
 
----------- Uploader (optional) ----------
+# ---------- Uploader (optional) ----------
 
 def upload_to_youtube(video_path, title, description, tags, thumb_path=None, privacy="public"):
 """
@@ -283,7 +281,7 @@ return None
 print("Upload logic here - OAuth found. Implement upload with google-auth client and youtube API.")  
 return None
 
----------- Main workflow ----------
+# ---------- Main workflow ----------
 
 def run_cycle(topic):
 stamp = datetime.utcnow().strftime("%Y%m%d%H%M%S")
@@ -331,13 +329,13 @@ print("Assembling short video...")
 assemble_video(short_voice_path, clips[:2], music, short_out)  
 
 
-if name == "main":
-# Example topics rotation (you can replace or connect to a trends API)
-topics = [
-"5 passive income ideas for teens",
-"How to save and invest your first $100",
-"The brutal truth about working a 9-5",
-"How the rich think about money"
-]
-topic = random.choice(topics)
-run_cycle(topic)
+if __name__ == "__main__":
+    # Example topics rotation
+    topics = [
+        "5 passive income ideas for teens",
+        "How to save and invest your first $100",
+        "The brutal truth about working a 9-5",
+        "How the rich think about money"
+    ]
+    topic = random.choice(topics)
+    run_cycle(topic)
